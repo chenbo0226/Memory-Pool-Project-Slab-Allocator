@@ -12,7 +12,7 @@
 ## 🛠️ 實作細節
 
 ### 核心結構
-我們利用 `union` 或指標轉型技巧，將閒置區塊的前 8 bytes 作為 `next` 指標：
+我們利用 **Pointer Casting (指標轉型)** 技巧，將閒置區塊的前 8 bytes 強制轉型為 `next` 指標使用：
 
 ```c
 typedef struct FreeNode {
