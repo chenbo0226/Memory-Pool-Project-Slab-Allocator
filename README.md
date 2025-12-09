@@ -32,3 +32,5 @@ static char memory_pool[POOL_SIZE * BLOCK_SIZE];
 ## 🔮 未來規劃
 * **導入 Thread-Safety 機制** (Mutex/Spinlock) 以支援多工環境。
 * **加入 Canary (金絲雀)** 機制偵測 Buffer Overflow。
+* **移植為 Linux Character Device Driver
+* **(此專案為個人自主研習項目，正持續進行中，專注於鞏固記憶體管理觀念)
