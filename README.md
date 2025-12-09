@@ -1,4 +1,4 @@
-# 嵌入式 O(1) 固定區塊記憶體池 (Fixed-Size Memory Pool)
+#  Linux Kernel-Level Efficient Memory Pool (Slab Allocator)
 
 ## 📌 專案動機
 標準 C 語言的 `malloc/free` 在頻繁配置與釋放時，容易產生 **記憶體碎片 (Fragmentation)**，且時間複雜度不穩定。
