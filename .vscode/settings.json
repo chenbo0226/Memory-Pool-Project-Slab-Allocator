@@ -3,5 +3,6 @@
         "stdbool.h": "c",
         "stdlib.h": "c",
         "memory_pool.h": "c"
-    }
+    },
+    "makefile.configureOnOpen": false
 }
