@@ -62,6 +62,12 @@ int main()
     pool_free(p2);
     pool_free(p3);
 
+    // 測試 Canary (加在 main.c 中間某處)
+    // 故意寫超過 32 bytes，例如寫到前一個 block 的 header
+    // char* p_bad = (char*)pool_alloc();
+    // p_bad[-1] = 0x00; // 破壞 header
+    // pool_free(p_bad); // 這裡應該會報錯 !!! MEMORY CORRUPTION DETECTED !!!
+
 
     // 暫停視窗 (清空緩衝區 + 等待輸入)
     //while (getchar() != '\n');

@@ -1,10 +1,12 @@
 # 編譯器設定
 CC = gcc
-CFLAGS = -Wall -g -Iinclude  # -Iinclude 代表去 include 資料夾找 .h 檔
+# -Iinclude 代表去 include 資料夾找 .h 檔
+# 在 CFLAGS 後面加上 -pthread
+CFLAGS = -Wall -g -Iinclude -pthread  
 
 # 目標檔案
 TARGET = my_pool
-SRCS = src/memory_pool.c src/main.c
+SRCS = src/memory_pool_v2.c src/main.c
 OBJS = $(SRCS:.c=.o)
 
 # 預設動作: 編譯 TARGET
