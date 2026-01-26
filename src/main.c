@@ -1,7 +1,24 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <pthread.h> // 多執行緒用
+#include <unistd.h>  // 為了用 usleep
 #include "memory_pool.h"
+
+
+// 新增 給多執行緒跑的極簡任務：一直申請又釋放
+void* thread_work(void* arg) {
+    int id = *(int*)arg;
+    for (int i = 0; i < 3; i++) { // 做 3 次
+        void* p = pool_alloc();
+        if (p) {
+            printf("[Thread %d] Alloc %p\n", id, p);
+            usleep(100); // 休息 0.1ms 讓其他執行緒有機會搶入
+            pool_free(p);
+        }
+    }
+    return NULL;
+}
 
 int main()
 {
@@ -62,12 +79,30 @@ int main()
     pool_free(p2);
     pool_free(p3);
 
-    // 測試 Canary (加在 main.c 中間某處)
-    // 故意寫超過 32 bytes，例如寫到前一個 block 的 header
-    // char* p_bad = (char*)pool_alloc();
-    // p_bad[-1] = 0x00; // 破壞 header
-    // pool_free(p_bad); // 這裡應該會報錯 !!! MEMORY CORRUPTION DETECTED !!!
+    // === 新增 測試 7: Canary 破壞測試 ===
+    // 這裡模擬，故意寫壞 Header 來看 pool_free 有沒有報警
+    printf("\n-------------------------Canary Test--------------------------\n");
+    char* p_bad = (char*)pool_alloc();
+    if (p_bad) {
+        // 往回推 4 bytes (一個 int) 就是 Header
+        unsigned int* header = (unsigned int*)p_bad - 1; 
+        *header = 0xDEAD0000; // 把原本的 0xDEADBEEF 改壞
+        printf("\nCorrupted header at %p. Freeing...\n", p_bad);
+        pool_free(p_bad); // 預期結果：印出 !!! MEMORY CORRUPTION DETECTED !!!
+    }
 
+    // === 新增 測試 8: Mutex 多執行緒測試 ===
+    printf("\n-------------------------Mutes Test--------------------------\n");
+    pthread_t t1, t2;
+    int id1 = 1, id2 = 2;
+    // 啟動兩個執行緒同時搶資源
+    pthread_create(&t1, NULL, thread_work, &id1);
+    pthread_create(&t2, NULL, thread_work, &id2);
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+    printf("\nMulti-thread test finished.\n");
+
+  
 
     // 暫停視窗 (清空緩衝區 + 等待輸入)
     //while (getchar() != '\n');
