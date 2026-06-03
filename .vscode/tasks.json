@@ -1,19 +1,13 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
-            "type": "cppbuild",
-            "label": "C/C++: gcc.exe 建置使用中檔案",
-            "command": "C:\\mingw64\\bin\\gcc.exe",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-fexec-charset=CP950"  // <--- 新增這一行
-            ],
+            "label": "make",
+            "type": "shell",
+            "command": "make",
+            "args": [],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"
@@ -21,9 +15,19 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
+            }
+        },
+        {
+            "label": "make clean",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
             },
-            "detail": "偵錯工具產生的工作。"
+            "problemMatcher": []
         }
-    ],
-    "version": "2.0.0"
+    ]
 }
