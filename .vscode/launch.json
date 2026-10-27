@@ -8,13 +8,14 @@
             "program": "${fileDirname}/${fileBasenameNoExtension}",
             "windows": {
                 "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe"
+                "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe",
+                "externalConsole": true
             },
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "build active C file",
@@ -33,13 +34,14 @@
             "program": "${workspaceFolder}/my_pool",
             "windows": {
                 "program": "${workspaceFolder}\\my_pool.exe",
-                "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe"
+                "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe",
+                "externalConsole": true
             },
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "build my_pool with Makefile",
