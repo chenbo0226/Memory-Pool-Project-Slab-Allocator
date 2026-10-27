@@ -2,12 +2,33 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "make",
-            "type": "shell",
-            "command": "make",
-            "args": [],
+            "label": "build active C file",
+            "type": "process",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-std=c17",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "windows": {
+                "command": "C:\\mingw64\\bin\\gcc.exe",
+                "args": [
+                    "-std=c17",
+                    "-Wall",
+                    "-Wextra",
+                    "-g",
+                    "${file}",
+                    "-o",
+                    "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                    "-fexec-charset=CP950"
+                ]
+            },
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${fileDirname}"
             },
             "problemMatcher": [
                 "$gcc"
@@ -18,9 +39,27 @@
             }
         },
         {
-            "label": "make clean",
-            "type": "shell",
+            "label": "build my_pool with Makefile",
+            "type": "process",
             "command": "make",
+            "windows": {
+                "command": "C:\\mingw64\\bin\\mingw32-make.exe"
+            },
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "clean Makefile outputs",
+            "type": "process",
+            "command": "make",
+            "windows": {
+                "command": "C:\\mingw64\\bin\\mingw32-make.exe"
+            },
             "args": [
                 "clean"
             ],

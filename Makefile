@@ -1,28 +1,43 @@
-# 編譯器設定
 CC = gcc
-# -Iinclude 代表去 include 資料夾找 .h 檔
-# 在 CFLAGS 後面加上 -pthread
-CFLAGS = -Wall -g -Iinclude -pthread  
+CFLAGS ?= -std=c17 -Wall -Wextra -g -Iinclude -pthread
 
-# 目標檔案
-TARGET = my_pool
-SRCS = src/memory_pool_v2.c src/main.c
-OBJS = $(SRCS:.c=.o)
+CURRENT_SRCS := src/memory_pool.c src/main.c
+CURRENT_OBJS := $(CURRENT_SRCS:.c=.o)
 
-# 預設動作: 編譯 TARGET
-all: $(TARGET)
+LEGACY_SRCS := backup/memory_pool_freelist_v1.c \
+	backup/memory_pool_freelist_demo.c
 
-# 連結 (Linking)
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+ifeq ($(OS),Windows_NT)
+CURRENT_TARGET := my_pool.exe
+LEGACY_TARGET := backup/memory_pool_freelist.exe
+else
+CURRENT_TARGET := my_pool
+LEGACY_TARGET := backup/memory_pool_freelist
+endif
 
-# 編譯 (Compiling)
-%.o: %.c
+# Keep the current allocator as the default build.
+all: current
+
+# Current allocator: canary checks and pthread protection.
+current: $(CURRENT_TARGET)
+
+$(CURRENT_TARGET): $(CURRENT_OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+src/%.o: src/%.c include/memory_pool.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# 清除編譯產生的檔案
-clean:
-	rm -f $(OBJS) $(TARGET)
+# Legacy allocator: simple free-list implementation and its standalone demo.
+legacy: $(LEGACY_TARGET)
 
-# 偽目標 (避免跟檔名衝突)
-.PHONY: all clean
+$(LEGACY_TARGET): $(LEGACY_SRCS) include/memory_pool.h
+	$(CC) $(CFLAGS) -o $@ $(LEGACY_SRCS)
+
+clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /Q $(subst /,\,$(CURRENT_OBJS) $(CURRENT_TARGET) $(LEGACY_TARGET)) 2>NUL
+else
+	rm -f $(CURRENT_OBJS) $(CURRENT_TARGET) $(LEGACY_TARGET)
+endif
+
+.PHONY: all current legacy clean

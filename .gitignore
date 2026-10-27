@@ -1,2 +1,4 @@
 *.o
+*.exe
 my_pool
+backup/memory_pool_freelist

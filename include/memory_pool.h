@@ -11,8 +11,8 @@
 
 // 2. 函式宣告 (Prototypes) - 告訴 main 說這些函式長什麼樣子
 // 注意：不要把變數定義放在這裡！
-void pool_init();
-void* pool_alloc();
-void pool_free();
+void pool_init(void);
+void* pool_alloc(void);
+void pool_free(void* ptr);
 
 #endif
