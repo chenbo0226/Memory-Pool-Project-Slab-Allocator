@@ -1,13 +1,14 @@
-#  Linux Kernel-Level Efficient Memory Pool (Slab Allocator)
+#  Fixed-Size Block Memory Pool in C
 
 ## 📌 專案動機
-標準 C 語言的 `malloc/free` 在頻繁配置與釋放時，容易產生 **記憶體碎片 (Fragmentation)**，且時間複雜度不穩定。
+探索固定區塊配置與 O(1) Free List 管理方式。
 本專案為銜接韌體實務，**自主於 Linux 環境實作** 高效能記憶體池，解決上述問題。
 
 ## ✨ 核心技術
-* **O(1) 極致效能**：捨棄傳統 O(N) 陣列搜尋，改用 **Linked List (Free List)** 管理空閒區塊。
-* **Embedded Pointer**：利用指標技巧，**不需額外 malloc 管理節點**，直接在閒置記憶體上建立結構 (Zero Overhead)。
+* **Free List**：捨棄傳統 O(N) 陣列搜尋，改用 **Linked List (Free List)** 管理空閒區塊。
+* **Embedded Pointer**：利用閒置區塊儲存 Next Pointer，減少額外管理節點的記憶體需求。
 * **LIFO 行為**：實作 Stack 行為，釋放的區塊優先被重用，提升 Cache Locality。
+* **Synchronization & Canary**： 使用 pthread mutex 保護共享 Free List，並加入 Canary 檢查機制，偵測特定位置的記憶體破壞
 
 ## 🛠️ 實作細節
 
@@ -29,8 +30,6 @@ static char memory_pool[POOL_SIZE * BLOCK_SIZE];
 | **陣列搜尋 (Array)** | O(N) | O(1) | O(N) (bool array) |
 | **鏈結串列 (This Project)** | **O(1)** | **O(1)** | **Zero** |
 
-## 🔮 未來規劃
-* **導入 Thread-Safety 機制** (Mutex/Spinlock) 以支援多工環境。
-* **加入 Canary (金絲雀)** 機制偵測 Buffer Overflow。
-* 移植為 **Linux Character Device Driver**
-* **(此專案為個人自主研習項目，正持續進行中，專注於鞏固記憶體管理觀念)**
+## 🔮 測試與改進
+* 已建立基本配置與釋放、LIFO 重用、Canary 異常及多執行緒操作測試；目前仍有 Memory Alignment 與釋放指標驗證等待改善項目
+* **(此專案為個人自主研習項目，專注於鞏固記憶體管理觀念)**
