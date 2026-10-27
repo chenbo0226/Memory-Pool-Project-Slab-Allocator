@@ -2,3 +2,4 @@
 *.exe
 my_pool
 backup/memory_pool_freelist
+backup/memory_pool_array
